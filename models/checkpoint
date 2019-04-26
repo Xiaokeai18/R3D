@@ -1,0 +1,6 @@
+model_checkpoint_path: "r3d_model-280"
+all_model_checkpoint_paths: "r3d_model-240"
+all_model_checkpoint_paths: "r3d_model-250"
+all_model_checkpoint_paths: "r3d_model-260"
+all_model_checkpoint_paths: "r3d_model-270"
+all_model_checkpoint_paths: "r3d_model-280"

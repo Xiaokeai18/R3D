@@ -1,5 +1,5 @@
 # Coder: Wang Pei
-# Github: https://github.com/xiaokeai18/
+# Github: https://github.com/xiaokeai18/R3D
 # ==============================================================================
 '''
 This is the resnet structure
@@ -42,7 +42,7 @@ def create_variables(name, shape, initializer=tf.contrib.layers.xavier_initializ
 def output_layer(input_layer, num_labels):
     '''
     :param input_layer: 2D tensor
-    :param num_labels: int. How many output labels in total? (10 for cifar10 and 100 for cifar100)
+    :param num_labels: int. How many output labels in total? 
     :return: output layer Y = WX + B
     '''
     input_dim = input_layer.get_shape().as_list()[-1]
@@ -191,7 +191,7 @@ def inference(input_tensor_batch, n, reuse):
             conv3 = residual_block(layers[-1], 64)
             layers.append(conv3)
         print(layers[-1].get_shape())
-        assert conv3.get_shape().as_list()[1:] == [6, 8, 8, 64]
+        assert conv3.get_shape().as_list()[1:] == [6, 15, 20, 64]
 
     with tf.variable_scope('fc', reuse=reuse):
         in_channel = layers[-1].get_shape().as_list()[-1]
@@ -200,7 +200,7 @@ def inference(input_tensor_batch, n, reuse):
         global_pool = tf.reduce_mean(relu_layer, [1, 2, 3])
 
         assert global_pool.get_shape().as_list()[-1:] == [64]
-        output = output_layer(global_pool, 10)
+        output = output_layer(global_pool, FLAGS.NUM_CLASSES)
         layers.append(output)
 
     return layers[-1]
@@ -218,4 +218,4 @@ def test_graph(train_dir='logs'):
     sess.run(init)
     summary_writer = tf.summary.FileWriter(train_dir, sess.graph)
 
-test_graph()
+#test_graph(train_dir=train_dir)
