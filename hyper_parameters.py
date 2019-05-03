@@ -14,5 +14,5 @@ tf.app.flags.DEFINE_integer('CROP_SIZE', 80, '''SIZE of the cutted image prepare
 tf.app.flags.DEFINE_integer('NUM_FRAMES_PER_CLIP', 24, '''number of frames per sample video for input''')
 tf.app.flags.DEFINE_integer('CHANNELS', 3, '''number of channel of the input image''')
 
-tf.app.flags.DEFINE_integer('NUM_CLASSES', 10, '''number of classes''')
+tf.app.flags.DEFINE_integer('NUM_CLASSES', 5, '''number of classes''')
 train_dir = 'logs_' + FLAGS.version + '/'

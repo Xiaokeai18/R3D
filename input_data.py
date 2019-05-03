@@ -71,11 +71,11 @@ def read_clip_and_label(filename, batch_size, start_pos=-1, num_frames_per_clip=
   else:
     # Process videos sequentially
     video_indices = range(start_pos, len(lines))
-  for index in video_indices:
+  for index in range(len(video_indices)):
     if(batch_index>=batch_size):
       next_batch_start = index
       break
-    line = lines[index].strip('\n').split()
+    line = lines[video_indices[index]].strip('\n').split()
     dirname = line[0]
     tmp_label = line[1]
     if not shuffle:
@@ -102,10 +102,10 @@ def read_clip_and_label(filename, batch_size, start_pos=-1, num_frames_per_clip=
         '''
         crop_x = int((img.shape[0] - crop_size + 20)/2)
         crop_y = int((img.shape[1] - crop_size)/2)
-        #if flip:
-        #  img = img[crop_x:crop_x+crop_size-20, crop_y+crop_size:crop_y:-1,:] #- np_mean[j]
-        #else:
-        img = img[crop_x:crop_x+crop_size-20, crop_y:crop_y+crop_size,:]
+        if flip:
+          img = img[crop_x:crop_x+crop_size-20, crop_y+crop_size:crop_y:-1,:] #- np_mean[j]
+        else:
+          img = img[crop_x:crop_x+crop_size-20, crop_y:crop_y+crop_size,:]
         img_datas.append(img)
       data.append(img_datas)
       label.append(int(tmp_label))
