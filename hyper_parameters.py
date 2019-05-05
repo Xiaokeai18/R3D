@@ -6,8 +6,8 @@ import tensorflow as tf
 FLAGS = tf.app.flags.FLAGS
 
 
-tf.app.flags.DEFINE_integer('num_residual_blocks', 10, '''How many residual blocks do you want''')
-tf.app.flags.DEFINE_float('weight_decay', 0.0002, '''scale for l2 regularization''')
+tf.app.flags.DEFINE_integer('num_residual_blocks', 5, '''How many residual blocks do you want''')
+tf.app.flags.DEFINE_float('weight_decay', 0.0001, '''scale for l2 regularization''')
 tf.app.flags.DEFINE_string('version', 'test_1', '''A version number defining the directory to save
 logs and checkpoints''')
 tf.app.flags.DEFINE_integer('CROP_SIZE', 80, '''SIZE of the cutted image prepared to train & test''')

@@ -53,7 +53,6 @@ def _variable_on_cpu(name, shape, initializer):
 
 
 def run_test():
-  model_name = "./**.model"
   test_list_file = 'test.list'
   num_test_videos = len(list(open(test_list_file,'r')))
   print("Number of test videos={}".format(num_test_videos))
@@ -81,7 +80,7 @@ def run_test():
   sess.run(init)
   # Create a saver for writing training checkpoints.
   #saver.restore(sess, model_name)
-  saver.restore(sess,"./models/r3d_model-14740")
+  saver.restore(sess,"./models/r3d_model-14999")
   # And then after everything is built, start the training loop.
   bufsize = 0
   write_file = open("predict_ret.txt", "w+")

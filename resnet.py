@@ -46,8 +46,8 @@ def output_layer(input_layer, num_labels):
     :return: output layer Y = WX + B
     '''
     input_dim = input_layer.get_shape().as_list()[-1]
-    fc_w = create_variables(name='fc_weights', shape=[input_dim, num_labels], is_fc_layer=True,
-                            initializer=tf.uniform_unit_scaling_initializer(factor=1.0))
+    fc_w = create_variables(name='fc_weights', shape=[input_dim, num_labels], is_fc_layer=True,#initializer=tf.uniform_unit_scaling_initializer(factor=1.0))
+                            initializer=tf.initializers.variance_scaling(scale=1.0,distribution="uniform"))
     fc_b = create_variables(name='fc_bias', shape=[num_labels], initializer=tf.zeros_initializer())
 
     fc_h = tf.matmul(input_layer, fc_w) + fc_b
@@ -145,7 +145,7 @@ def residual_block(input_layer, output_channel, first_block=False):
     #  depth of input layers
     if increase_dim is True:
         pooled_input = tf.nn.avg_pool3d(input_layer, ksize=[1, 2, 2, 2, 1],
-                                      strides=[1, 2, 2, 2, 1], padding='VALID')
+                                      strides=[1, 2, 2, 2, 1], padding='SAME')
         padded_input = tf.pad(pooled_input, [[0, 0], [0, 0], [0, 0], [0, 0], [input_channel // 2,
                                                                          input_channel // 2]])
     else:
@@ -157,7 +157,7 @@ def residual_block(input_layer, output_channel, first_block=False):
 
 def inference(input_tensor_batch, n, reuse):
     '''
-    The main function that defines the ResNet. total layers = 1 + 2n + 2n + 2n +1 = 6n + 2
+    The main function that defines the ResNet. total layers = 1 + 2n + 2n + 4n + 2n +1 = 10n + 2
     :param input_tensor_batch: 5D tensor, which is [batch, in_depth, in_height, in_width, in_channels]
     :param n: num_residual_blocks
     :param reuse: To build train graph, reuse=False. To build validation graph and share weights
@@ -168,7 +168,7 @@ def inference(input_tensor_batch, n, reuse):
     layers = []
     with tf.variable_scope('conv0', reuse=reuse):
         conv0 = conv_bn_relu_layer(input_tensor_batch, [3, 3, 3, 3, 16], 1)
-        activation_summary(conv0)
+        #activation_summary(conv0)
         layers.append(conv0)
 
     for i in range(n):
@@ -177,21 +177,36 @@ def inference(input_tensor_batch, n, reuse):
                 conv1 = residual_block(layers[-1], 16, first_block=True)
             else:
                 conv1 = residual_block(layers[-1], 16)
-            activation_summary(conv1)
+            #activation_summary(conv1)
             layers.append(conv1)
     print(layers[-1].get_shape())
     for i in range(n):
         with tf.variable_scope('conv2_%d' %i, reuse=reuse):
             conv2 = residual_block(layers[-1], 32)
-            activation_summary(conv2)
+            #activation_summary(conv2)
             layers.append(conv2)
     print(layers[-1].get_shape())
     for i in range(n):
         with tf.variable_scope('conv3_%d' %i, reuse=reuse):
             conv3 = residual_block(layers[-1], 64)
             layers.append(conv3)
-        print(layers[-1].get_shape())
         assert conv3.get_shape().as_list()[1:] == [6, 15, 20, 64]
+    print(layers[-1].get_shape())
+    for i in range(n):
+        with tf.variable_scope('conv4_%d' %i, reuse=reuse):
+            conv4 = residual_block(layers[-1], 128)
+            layers.append(conv4)
+        with tf.variable_scope('conv5_%d' %i, reuse=reuse):    
+            conv5 = residual_block(layers[-1], 128)
+            layers.append(conv5)
+        assert conv5.get_shape().as_list()[1:] == [3, 8, 10, 128]
+    print(layers[-1].get_shape())
+    for i in range(n):
+        with tf.variable_scope('conv6_%d' %i, reuse=reuse):
+            conv6 = residual_block(layers[-1], 256)
+            layers.append(conv6)
+        assert conv6.get_shape().as_list()[1:] == [2, 4, 5, 256]
+    print(layers[-1].get_shape())
 
     with tf.variable_scope('fc', reuse=reuse):
         in_channel = layers[-1].get_shape().as_list()[-1]
@@ -199,7 +214,7 @@ def inference(input_tensor_batch, n, reuse):
         relu_layer = tf.nn.relu(bn_layer)
         global_pool = tf.reduce_mean(relu_layer, [1, 2, 3])
 
-        assert global_pool.get_shape().as_list()[-1:] == [64]
+        assert global_pool.get_shape().as_list()[-1:] == [256]
         output = output_layer(global_pool, FLAGS.NUM_CLASSES)
         layers.append(output)
 

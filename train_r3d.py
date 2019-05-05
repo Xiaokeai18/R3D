@@ -190,7 +190,7 @@ def run_training():
       print('Step %d: %.3f sec' % (step, duration))
 
       # Save a checkpoint and evaluate the model periodically.
-      if (step) % 10 == 0 or (step + 1) == FLAGS.max_steps:
+      if (step) % 50 == 0 or (step + 1) == FLAGS.max_steps:
         saver.save(sess, os.path.join(model_save_dir, 'r3d_model'), global_step=step)
         print('Training Data Eval:')
         summary, acc = sess.run(
