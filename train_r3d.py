@@ -13,14 +13,13 @@ import input_data
 import resnet
 import math
 import numpy as np
+from hyper_parameters import *
 
 # Basic model parameters as external flags.
-flags = tf.app.flags
+
 gpu_num = 1
 #flags.DEFINE_float('learning_rate', 0.0, 'Initial learning rate.')
-flags.DEFINE_integer('max_steps', 15000, 'Number of steps to run trainer.')
-flags.DEFINE_integer('batch_size', 10, 'Batch size.')
-FLAGS = flags.FLAGS
+
 MOVING_AVERAGE_DECAY = 0.9999
 model_save_dir = './models'
 
@@ -96,7 +95,7 @@ def run_training():
   if not os.path.exists(model_save_dir):
       os.makedirs(model_save_dir)
   use_pretrained_model = False 
-  use_ckpt = False
+  use_ckpt = True
   model_filename = "./models/r3d_model-7999"
 
   with tf.Graph().as_default():
@@ -121,7 +120,7 @@ def run_training():
         
         logit = resnet.inference(
                         images_placeholder[gpu_index * FLAGS.batch_size:(gpu_index + 1) * FLAGS.batch_size,:,:,:,:],
-                        5,
+                        FLAGS.num_residual_blocks,
                         False
                         )
         loss_name_scope = ('gpud_%d_loss' % gpu_index)

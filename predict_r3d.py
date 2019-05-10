@@ -15,12 +15,11 @@ import tensorflow as tf
 import input_data
 import resnet
 import numpy as np
-
+from hyper_parameters import *
 # Basic model parameters as external flags.
-flags = tf.app.flags
+
 gpu_num = 1
-flags.DEFINE_integer('batch_size', 10 , 'Batch size.')
-FLAGS = flags.FLAGS
+
 
 def placeholder_inputs(batch_size):
   """Generate placeholder variables to represent the input tensors.
@@ -80,7 +79,7 @@ def run_test():
   sess.run(init)
   # Create a saver for writing training checkpoints.
   #saver.restore(sess, model_name)
-  saver.restore(sess,"./models/r3d_model-14999")
+  saver.restore(sess,"./models/r3d_model-1800")
   # And then after everything is built, start the training loop.
   bufsize = 0
   write_file = open("predict_ret.txt", "w+")
@@ -105,12 +104,13 @@ def run_test():
             session=sess,
             feed_dict={images_placeholder: test_images}
             )
-    
+    '''
     acc = sess.run(accuracy,feed_dict={
                                       images_placeholder: test_images,
                                       labels_placeholder: test_labels
                                       })
     print(acc)
+    '''
     for i in range(0, valid_len):
       true_label = test_labels[i],
       top1_predicted_label = np.argmax(predict_score[i])

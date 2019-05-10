@@ -157,7 +157,7 @@ def residual_block(input_layer, output_channel, first_block=False):
 
 def inference(input_tensor_batch, n, reuse):
     '''
-    The main function that defines the ResNet. total layers = 1 + 2n + 2n + 4n + 2n +1 = 10n + 2
+    The main function that defines the ResNet. total layers = 1 + 2n + 2n + 2n + 2n +1 = 10n + 2
     :param input_tensor_batch: 5D tensor, which is [batch, in_depth, in_height, in_width, in_channels]
     :param n: num_residual_blocks
     :param reuse: To build train graph, reuse=False. To build validation graph and share weights
@@ -196,16 +196,14 @@ def inference(input_tensor_batch, n, reuse):
         with tf.variable_scope('conv4_%d' %i, reuse=reuse):
             conv4 = residual_block(layers[-1], 128)
             layers.append(conv4)
-        with tf.variable_scope('conv5_%d' %i, reuse=reuse):    
-            conv5 = residual_block(layers[-1], 128)
-            layers.append(conv5)
-        assert conv5.get_shape().as_list()[1:] == [3, 8, 10, 128]
+
+        assert conv4.get_shape().as_list()[1:] == [3, 8, 10, 128]
     print(layers[-1].get_shape())
     for i in range(n):
-        with tf.variable_scope('conv6_%d' %i, reuse=reuse):
-            conv6 = residual_block(layers[-1], 256)
-            layers.append(conv6)
-        assert conv6.get_shape().as_list()[1:] == [2, 4, 5, 256]
+        with tf.variable_scope('conv5_%d' %i, reuse=reuse):
+            conv5 = residual_block(layers[-1], 256)
+            layers.append(conv5)
+        assert conv5.get_shape().as_list()[1:] == [2, 4, 5, 256]
     print(layers[-1].get_shape())
 
     with tf.variable_scope('fc', reuse=reuse):

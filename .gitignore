@@ -106,3 +106,4 @@ venv.bak/
 models/
 visual_logs/
 *.list
+./models/*

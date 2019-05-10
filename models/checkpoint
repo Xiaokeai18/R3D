@@ -1,6 +1,0 @@
-model_checkpoint_path: "r3d_model-8400"
-all_model_checkpoint_paths: "r3d_model-8200"
-all_model_checkpoint_paths: "r3d_model-8250"
-all_model_checkpoint_paths: "r3d_model-8300"
-all_model_checkpoint_paths: "r3d_model-8350"
-all_model_checkpoint_paths: "r3d_model-8400"
