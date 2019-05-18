@@ -79,7 +79,7 @@ def run_test():
   sess.run(init)
   # Create a saver for writing training checkpoints.
   #saver.restore(sess, model_name)
-  saver.restore(sess,"./models/r3d_model-1800")
+  saver.restore(sess,"./models/r3d_model-4999")
   # And then after everything is built, start the training loop.
   bufsize = 0
   write_file = open("predict_ret.txt", "w+")

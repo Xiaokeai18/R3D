@@ -95,7 +95,7 @@ def run_training():
   if not os.path.exists(model_save_dir):
       os.makedirs(model_save_dir)
   use_pretrained_model = False 
-  use_ckpt = True
+  use_ckpt = False
   model_filename = "./models/r3d_model-7999"
 
   with tf.Graph().as_default():
@@ -111,7 +111,7 @@ def run_training():
     tower_grads1 = []
     tower_grads2 = []
     logits = []
-    opt_stable = tf.train.AdamOptimizer(1e-4)
+    opt_stable = tf.train.AdamOptimizer(1e-3)
     opt_finetuning = tf.train.AdamOptimizer(1e-3)
 
     for gpu_index in range(0, gpu_num):
@@ -190,7 +190,6 @@ def run_training():
 
       # Save a checkpoint and evaluate the model periodically.
       if (step) % 50 == 0 or (step + 1) == FLAGS.max_steps:
-        saver.save(sess, os.path.join(model_save_dir, 'r3d_model'), global_step=step)
         print('Training Data Eval:')
         summary, acc = sess.run(
                         [merged, accuracy],
@@ -215,6 +214,8 @@ def run_training():
                                         })
         print ("accuracy: " + "{:.5f}".format(acc))
         test_writer.add_summary(summary, step)
+      if (step) % 200 == 0 or (step + 1) == FLAGS.max_steps:
+        saver.save(sess, os.path.join(model_save_dir, 'r3d_model'), global_step=step)
   print("done")
 
 def main(_):
