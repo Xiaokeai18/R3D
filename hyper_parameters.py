@@ -5,8 +5,8 @@ import tensorflow as tf
 
 FLAGS = tf.app.flags.FLAGS
 
-tf.app.flags.DEFINE_integer('max_steps', 500000, 'Number of steps to run trainer.')
-tf.app.flags.DEFINE_integer('batch_size', 20 , 'Batch size.')
+tf.app.flags.DEFINE_integer('max_steps', 5000, 'Number of steps to run trainer.')
+tf.app.flags.DEFINE_integer('batch_size', 10 , 'Batch size.')
 tf.app.flags.DEFINE_integer('gpu_num', 1 , 'gpu_num')
 tf.app.flags.DEFINE_integer('num_residual_blocks', 5, '''How many residual blocks do you want''')
 tf.app.flags.DEFINE_float('weight_decay', 0.0002, '''scale for l2 regularization''')

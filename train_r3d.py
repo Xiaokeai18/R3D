@@ -95,8 +95,8 @@ def run_training():
   if not os.path.exists(model_save_dir):
       os.makedirs(model_save_dir)
   use_pretrained_model = False 
-  use_ckpt = False
-  model_filename = "./models/r3d_model-7999"
+  use_ckpt = True
+  model_filename = "./models/r3d_model-4999"
 
   with tf.Graph().as_default():
     global_step = tf.get_variable(

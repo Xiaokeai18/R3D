@@ -79,7 +79,7 @@ def run_test():
   sess.run(init)
   # Create a saver for writing training checkpoints.
   #saver.restore(sess, model_name)
-  saver.restore(sess,"./models/r3d_model-4999")
+  saver.restore(sess,"./models/r3d_model-4200")
   # And then after everything is built, start the training loop.
   bufsize = 0
   write_file = open("predict_ret.txt", "w+")
@@ -87,7 +87,7 @@ def run_test():
   all_steps = int((num_test_videos - 1) / (FLAGS.batch_size * gpu_num) + 1)
   accuracy = tower_acc(logits, labels_placeholder)
 
-  acc_cnt,cnt = 0,1
+  acc_cnt,acc5_cnt,cnt = 0,0,1
 
   for step in xrange(all_steps):
     # Fill a feed dictionary with the actual set of images and labels
@@ -104,6 +104,10 @@ def run_test():
             session=sess,
             feed_dict={images_placeholder: test_images}
             )
+    acc5 = tf.nn.in_top_k(predict_score,test_labels,5)
+    top5_score = acc5.eval(session=sess,
+                feed_dict={images_placeholder: test_images}
+                )
     '''
     acc = sess.run(accuracy,feed_dict={
                                       images_placeholder: test_images,
@@ -123,9 +127,15 @@ def run_test():
       cnt += 1
       if top1_predicted_label == true_label[0]:
         acc_cnt += 1
+      if top5_score[i]:
+        acc5_cnt += 1
+    
+    
+
 
 
   print("Test Accuracy={}".format(float(acc_cnt)/float(cnt)))
+  print("Top-5 Accuracy={}".format(float(acc5_cnt)/float(cnt)))
 
   write_file.close()
   print("done")
